@@ -25,8 +25,7 @@ public class ShooterArm extends Loopable {
 		left.changeControlMode(TalonControlMode.Position);
 		if(!(controller instanceof ShooterPidController))
 			controller = new ShooterPidController(0.0, 0.0, 0.0, left); //tune pid values
-		ShooterPidController pidController = (ShooterPidController)controller;
-		pidController.setSetpoint(setpoint);
+		((ShooterPidController)pidController).setSetpoint(setpoint);
 	}
 	
 	@Override
