@@ -19,7 +19,6 @@ public class BehaviorManager {
 	public ShooterArm angler = HardwareAdaptor.kAngler;
 	public Punch punch = HardwareAdaptor.kPunch;
 	
-	private PunchAction punchAction = new PunchAction(0.25);
 	
 	public void update(Commands commands) {
 		
