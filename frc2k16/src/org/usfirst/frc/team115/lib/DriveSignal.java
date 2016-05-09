@@ -1,3 +1,4 @@
+package org.usfirst.frc.team115.lib;
 
 public class DriveSignal {
     public double leftMotor;
