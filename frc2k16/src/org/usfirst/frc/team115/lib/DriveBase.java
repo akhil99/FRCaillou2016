@@ -14,7 +14,21 @@ public class DriveBase extends Loopable{
   private CANTalon rightDriveBaseFront;
   private CANTalon rightDriveBaseRear;
 
-  private Controller controller;
+  private DriveController controller;
+  
+  private DriveState cachedState = new DriveState(0, 0, 0, 0, 0, 0);
+  
+  public abstract class DriveController extends Controller {
+
+		@Override
+		public void reset() {
+			// TODO Auto-generated method stub
+			
+		}
+  	
+		public abstract DriveSignal update(DriveState state); 
+		
+  }
   
   public DriveBase() {
 
@@ -24,24 +38,30 @@ public class DriveBase extends Loopable{
     rightDriveBaseRear = new CANTalon(Constants.kRightDriveRear);
   }
   
-  public void setOpenLoop(double left, double right) {
+  public void setOpenLoop(DriveSignal signal) {
   	controller = null;
-  	setDriveOutputs(left, right);
+  	setDriveOutputs(signal);
   }
 
-  public void setDriveOutputs(double left, double right) {
-    leftDriveBaseFront.set(left);
-    leftDriveBaseRear.set(left);
-    rightDriveBaseFront.set(-right);
-    rightDriveBaseRear.set(-right);
+  public void setDriveOutputs(DriveSignal signal) {
+    leftDriveBaseFront.set(signal.left);
+    leftDriveBaseRear.set(signal.left);
+    rightDriveBaseFront.set(-signal.right);
+    rightDriveBaseRear.set(-signal.right);
   }
 
 	@Override
 	public void update() {
 		if(controller != null) {
-			controller.update();
+			setDriveOutputs(controller.update(getCurrentState()));
 		}
 	}
+	
+	public DriveState getCurrentState() {
+    cachedState.reset(0, 0, 0, 0, 0, 0); //TODO update with values from sensor readings
+    return cachedState;
+}
+	
 	
 	public CANTalon getLeftFront() {
 		return leftDriveBaseFront;

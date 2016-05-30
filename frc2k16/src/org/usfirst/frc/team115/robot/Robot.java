@@ -3,6 +3,7 @@ package org.usfirst.frc.team115.robot;
 
 import org.usfirst.frc.team115.lib.BehaviorManager;
 import org.usfirst.frc.team115.lib.DriveBase;
+import org.usfirst.frc.team115.lib.DriveSignal;
 import org.usfirst.frc.team115.lib.Logger;
 import org.usfirst.frc.team115.lib.Looper;
 import org.usfirst.frc.team115.lib.MultiLooper;
@@ -78,7 +79,7 @@ public class Robot extends IterativeRobot {
 
 		operatorInterface.reset();
 		
-		drive.setOpenLoop(0, 0);
+		drive.setOpenLoop(new DriveSignal(0, 0));
 		rightFlywheel.setOpenLoop(0.0);
 		leftFlywheel.setOpenLoop(0.0);
 		

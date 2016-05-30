@@ -13,5 +13,11 @@ public abstract class BangBangController extends Controller {
 	}
 	
 	public abstract void update();
+	
+	public void reset() {
+		max = 0;
+		min = 0;
+		setpoint = 0;
+	}
 
 }

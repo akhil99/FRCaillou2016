@@ -5,7 +5,6 @@ import org.usfirst.frc.team115.lib.Commands.IntakeRequest;
 import org.usfirst.frc.team115.lib.Commands.PunchRequest;
 import org.usfirst.frc.team115.robot.Constants;
 import org.usfirst.frc.team115.robot.HardwareAdaptor;
-import org.usfirst.frc.team115.robot.controllers.PunchAction;
 import org.usfirst.frc.team115.robot.subsystems.Flywheel;
 import org.usfirst.frc.team115.robot.subsystems.Intake;
 import org.usfirst.frc.team115.robot.subsystems.Punch;
@@ -18,9 +17,7 @@ public class BehaviorManager {
 	public Intake intake = HardwareAdaptor.kIntake;
 	public ShooterArm angler = HardwareAdaptor.kAngler;
 	public Punch punch = HardwareAdaptor.kPunch;
-	
-	private PunchAction punchAction = new PunchAction(0.25);
-	
+		
 	public void update(Commands commands) {
 		
 		if(commands.flywheelRequest == FlywheelRequest.INTAKE) {

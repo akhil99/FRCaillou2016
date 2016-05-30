@@ -12,6 +12,6 @@ public abstract class Controller {
 		return setpoint;
 	}
 	
-	public abstract void update();
+	public abstract void reset();
 	
 }

@@ -3,7 +3,7 @@ package org.usfirst.frc.team115.robot.subsystems;
 import java.util.function.DoubleFunction;
 
 import org.usfirst.frc.team115.lib.DriveBase;
-import org.usfirst.frc.team115.lib.Loopable;
+import org.usfirst.frc.team115.lib.DriveSignal;
 
 public class DriveSystem {
 
@@ -122,7 +122,7 @@ public class DriveSystem {
 			rightPwm = -1.0;
 		}
 
-		drive.setOpenLoop(leftPwm, rightPwm);
+		drive.setOpenLoop(new DriveSignal(leftPwm, rightPwm));
 	}
 
 	private DoubleFunction<Double> limiter(double minimum, double maximum) {

@@ -79,8 +79,11 @@ public class Flywheel extends Loopable {
 	
 	@Override
 	public void update() {
-		if(controller != null)
-			controller.update();
+		if(controller instanceof FlywheelBangBangController) {
+			((FlywheelBangBangController)controller).update();
+		} else if(controller instanceof FlywheelPidController) {
+			((FlywheelPidController)controller).update();
+		} 
 		log();
 	}
 

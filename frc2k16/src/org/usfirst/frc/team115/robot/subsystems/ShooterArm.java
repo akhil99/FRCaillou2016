@@ -31,8 +31,9 @@ public class ShooterArm extends Loopable {
 	
 	@Override
 	public void update() {
-		if(controller != null)
-			controller.update();
+		if(controller instanceof ShooterPidController) {
+			((ShooterPidController)controller).update();
+		}
 	}
 
 }
