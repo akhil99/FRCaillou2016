@@ -79,7 +79,7 @@ public class Robot extends IterativeRobot {
 
 		operatorInterface.reset();
 		
-		drive.setOpenLoop(new DriveSignal(0, 0));
+		drive.setOpenLoop(DriveSignal.NEUTRAL);
 		rightFlywheel.setOpenLoop(0.0);
 		leftFlywheel.setOpenLoop(0.0);
 		

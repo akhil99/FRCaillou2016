@@ -17,7 +17,7 @@ public class BehaviorManager {
 	public Intake intake = HardwareAdaptor.kIntake;
 	public ShooterArm angler = HardwareAdaptor.kAngler;
 	public Punch punch = HardwareAdaptor.kPunch;
-		
+
 	public void update(Commands commands) {
 		
 		if(commands.flywheelRequest == FlywheelRequest.INTAKE) {
