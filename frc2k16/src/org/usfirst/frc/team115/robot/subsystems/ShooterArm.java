@@ -6,25 +6,26 @@ import org.usfirst.frc.team115.robot.controllers.Controller;
 import org.usfirst.frc.team115.robot.controllers.ShooterPidController;
 
 import edu.wpi.first.wpilibj.CANTalon;
+import edu.wpi.first.wpilibj.CANTalon.FeedbackDevice;
 import edu.wpi.first.wpilibj.CANTalon.TalonControlMode;
 
 public class ShooterArm extends Loopable {
 	
-	CANTalon left, right;
+	CANTalon arm;
 	Controller controller;
 	
 	public ShooterArm() {
-		left = new CANTalon(Constants.kLeftShooter);
-		right = new CANTalon(Constants.kRightShooter);
-		
-		right.changeControlMode(TalonControlMode.Follower);
-		right.set(left.getDeviceID());
+		arm = new CANTalon(Constants.kRightShooter);
+		int absolutePosition = arm.getPulseWidthPosition() & 0xFFF;
+		arm.setEncPosition(absolutePosition);
+		arm.setFeedbackDevice(FeedbackDevice.CtreMagEncoder_Relative);
+		arm.reverseSensor(false);
 	}
 	
 	public void setPidSetpoint(double setpoint) {
-		left.changeControlMode(TalonControlMode.Position);
+		arm.changeControlMode(TalonControlMode.Position);
 		if(!(controller instanceof ShooterPidController))
-			controller = new ShooterPidController(0.0, 0.0, 0.0, left); //tune pid values
+			controller = new ShooterPidController(0.75, 0.0, 0.01, 0.1, arm); //tune pid values
 		((ShooterPidController)controller).setSetpoint(setpoint);
 	}
 	
@@ -33,6 +34,18 @@ public class ShooterArm extends Loopable {
 		if(controller instanceof ShooterPidController) {
 			((ShooterPidController)controller).update();
 		}
+	}
+	
+	public double getPosition() {
+		return arm.getPosition();
+	}
+	
+	public double getOutput() {
+		return arm.getOutputVoltage();
+	}
+	
+	public boolean isOnTarget() {
+		return ((ShooterPidController)controller).onTarget();
 	}
 
 }

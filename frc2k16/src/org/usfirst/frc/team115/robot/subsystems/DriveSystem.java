@@ -25,16 +25,6 @@ public class DriveSystem {
 	private double wheelDeadband = 0.02;
 	private double throttleDeadband = 0.02;
 
-	/**
-	 * Drive the DriveTrain in the Austin/Cheesy style. Originally pioneered by Austin
-	 * Schuh in 2008, this style of drive has been stolen 254's public repos by practically every
-	 * single team.
-	 *
-	 * @param throttle  the throttle to drive with
-	 * @param wheel     the wheel to drive with
-	 * @param quickturn whether or not to apply quickturn
-	 */
-
 	public void drive(double throttle, double wheel, boolean quickturn) {
 		wheel = limiter.apply(wheel);
 		throttle = limiter.apply(throttle);

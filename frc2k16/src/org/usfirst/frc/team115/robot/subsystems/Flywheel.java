@@ -4,6 +4,7 @@ import org.usfirst.frc.team115.lib.Loopable;
 import org.usfirst.frc.team115.robot.controllers.Controller;
 import org.usfirst.frc.team115.robot.controllers.FlywheelBangBangController;
 import org.usfirst.frc.team115.robot.controllers.FlywheelPidController;
+import org.usfirst.frc.team115.robot.controllers.TBHController;
 
 import edu.wpi.first.wpilibj.CANTalon;
 import edu.wpi.first.wpilibj.CANTalon.FeedbackDevice;
@@ -19,9 +20,10 @@ public class Flywheel extends Loopable {
 		this.flywheelMotor = new CANTalon(talonId);
 		this.name = name;
 		
-		flywheelMotor.setFeedbackDevice(FeedbackDevice.QuadEncoder);
-		flywheelMotor.reverseSensor(reverse);
-		flywheelMotor.configEncoderCodesPerRev(4096);
+		int absolutePosition = flywheelMotor.getPulseWidthPosition() & 0xFFF;
+		flywheelMotor.setEncPosition(absolutePosition);
+		flywheelMotor.setFeedbackDevice(FeedbackDevice.CtreMagEncoder_Relative);
+		flywheelMotor.reverseSensor(false);
 		
 		flywheelMotor.changeControlMode(TalonControlMode.Speed);
 	}
@@ -30,10 +32,17 @@ public class Flywheel extends Loopable {
 		return name;
 	}
 	
+	public void setTBHSetpoint(double speed) {
+		flywheelMotor.changeControlMode(TalonControlMode.PercentVbus);
+		if(!(controller instanceof TBHController))
+			controller = new TBHController(flywheelMotor, speed, 1E-5);
+		((TBHController)controller).setSetpoint(speed);
+	}
+	
 	public void setSpeedPidSetpoint(double speed) {
 		flywheelMotor.changeControlMode(TalonControlMode.Speed);
 		if(!(controller instanceof FlywheelPidController))
-			controller = new FlywheelPidController(flywheelMotor, 0.3, 0.0, 0.0, 0.2); //tune pidf
+			controller = new FlywheelPidController(flywheelMotor, 0.2, 0.0, 0.0, 0); //tune pidf
 		((FlywheelPidController)(controller)).setSetpoint(speed);
 	}
 	
@@ -69,12 +78,16 @@ public class Flywheel extends Loopable {
 		System.out.println("tspd: " + flywheelMotor.getSpeed());
 		System.out.println("terr: " + flywheelMotor.getClosedLoopError());
 		//System.out.println("ttrg: " + controller.getSetpoint());
-	}
+	} 
 	
 	public String getLog() {
 		return "tout: " + getVoltage() + 
 				", tspd: " + getSpeedRPM() + ", terr: " + flywheelMotor.getClosedLoopError();
 				//", ttrg: " + controller.getSetpoint();
+	}
+	
+	public double getEncVel() {
+		return flywheelMotor.getEncVelocity();
 	}
 	
 	@Override
@@ -83,7 +96,9 @@ public class Flywheel extends Loopable {
 			((FlywheelBangBangController)controller).update();
 		} else if(controller instanceof FlywheelPidController) {
 			((FlywheelPidController)controller).update();
-		} 
+		} else if(controller instanceof TBHController) {
+			((TBHController)controller).update();
+		}
 		log();
 	}
 

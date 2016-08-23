@@ -7,15 +7,25 @@ public class Commands {
 	}
 	
 	public enum IntakeRequest {
-		NONE, INTAKE
+		NONE, INTAKE, EXHAUST
 	}
 	
 	public enum PunchRequest {
-		PUNCH, NONE
+		PUNCH, NONE, INTAKE
+	}
+	
+	public enum ArmRequest {
+		INTAKE, OUTERWORKS, SPY, BATTER, LOWGOAL
+	}
+	
+	public enum ActiveIntakeRequest {
+		INTAKE, EXHAUST, NONE
 	}
 	
 	public IntakeRequest intakeRequest;
+	public ActiveIntakeRequest activeIntakeRequest;
 	public FlywheelRequest flywheelRequest;
 	public PunchRequest punchRequest;
-
+	public ArmRequest armRequest;
+	public boolean cancelRoutine;
 }

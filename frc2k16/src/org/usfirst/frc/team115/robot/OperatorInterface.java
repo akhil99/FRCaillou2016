@@ -23,29 +23,49 @@ public class OperatorInterface {
 		commands = new Commands();
 	}
 
-	public Commands getCommands() {
-		if(throttle.getTrigger()) {
+	public Commands getCommands(){
+		/*f(throttle.getRawButton(3)) {
 			commands.intakeRequest = IntakeRequest.INTAKE;
-			commands.flywheelRequest = FlywheelRequest.INTAKE;
 		} else {
 			commands.intakeRequest = IntakeRequest.NONE;
-		}
-		
-		if(buttonBoard.getRawButton(4)) {
-			commands.punchRequest = PunchRequest.PUNCH;
+		}*/
+		if(throttle.getTrigger()) {
+			commands.punchRequest = PunchRequest.INTAKE;
+			commands.activeIntakeRequest = Commands.ActiveIntakeRequest.INTAKE;
+			commands.flywheelRequest = FlywheelRequest.INTAKE;
 		} else {
+			commands.activeIntakeRequest = Commands.ActiveIntakeRequest.NONE;
 			commands.punchRequest = PunchRequest.NONE;
 		}
-				
+
+		if(wheel.getRawButton(3)) {
+			commands.cancelRoutine = true;
+		} else {
+			commands.cancelRoutine = false;
+		}
+
+		if(buttonBoard.getRawButton(4)) {
+			commands.punchRequest = PunchRequest.PUNCH;
+		} else if(commands.punchRequest != PunchRequest.INTAKE) {
+			commands.punchRequest = PunchRequest.NONE;
+		}
+
 
 		if(buttonBoard.getRawButton(3)) {
-			commands.flywheelRequest = FlywheelRequest.BATTER_SHOOT;
-		} else if (buttonBoard.getRawButton(2)) {
 			commands.flywheelRequest = FlywheelRequest.SHOOT;
-		} else if (buttonBoard.getRawButton(1)){
+		} /*else if (buttonBoard.getRawButton(2)) {
+			commands.flywheelRequest = FlywheelRequest.SHOOT;
+		} */else if (buttonBoard.getRawButton(1)){
 			commands.flywheelRequest = FlywheelRequest.NONE;
 		}
-		
+
+		if(buttonBoard.getRawButton(2)) {
+			commands.armRequest = Commands.ArmRequest.INTAKE;
+		} else if(buttonBoard.getRawButton(5)) {
+			commands.armRequest = Commands.ArmRequest.OUTERWORKS;
+		}
+
+
 		return commands;
 	}
 

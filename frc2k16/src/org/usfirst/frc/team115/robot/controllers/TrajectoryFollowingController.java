@@ -1,6 +1,7 @@
 package org.usfirst.frc.team115.robot.controllers;
 
 import org.usfirst.frc.team115.trajectory.lib.TrajectoryFollower;
+import org.usfirst.frc.team115.trajectory.lib.TrajectoryFollower.TrajectorySetpoint;
 
 public class TrajectoryFollowingController extends Controller {
 
@@ -38,6 +39,14 @@ public class TrajectoryFollowingController extends Controller {
 		result = 0;
 		error = 0;
 		follower.setGoal(follower.getCurrentSetpoint(), goal);
+	}
+	
+	public TrajectorySetpoint getTrajSetpoint() {
+		return follower.getCurrentSetpoint();
+	}
+	
+	public boolean isFinished() {
+		return follower.isFinished();
 	}
 
 	public boolean onTarget() {

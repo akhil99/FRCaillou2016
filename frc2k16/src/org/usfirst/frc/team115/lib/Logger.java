@@ -35,14 +35,15 @@ public class Logger extends Loopable {
 	@Override
 	public void update() {
 		double time = Timer.getFPGATimestamp();
-		writer.println("[" + new Date().getTime() + "], " + "FPGA, Time, " + time);
+		writer.println((time - old) + ",");
+		/*writer.println("[" + new Date().getTime() + "], " + "FPGA, Time, " + time);
 		writer.println("[" + new Date().getTime() + "], " + "Delta Time, " + (time - old));
 		writer.println("[" + new Date().getTime() + "], " + "General, Battery Voltage, " + DriverStation.getInstance().getBatteryVoltage());
 		writer.println("[" + new Date().getTime() + "], " + "General, Match Time, " + DriverStation.getInstance().getMatchTime());
 		writer.println("[" + new Date().getTime() + "], " + "Left Flywheel, Log, " + leftFlywheel.getLog());
 		writer.println("[" + new Date().getTime() + "], " + "Right Flywheel, Log, " + rightFlywheel.getLog());
 		writer.println("[" + new Date().getTime() + "], " + "Punch, Log, " + punch.getLog());
-		writer.println("[" + new Date().getTime() + "], " + "Intake, Log, " + intake.getLog());
+		writer.println("[" + new Date().getTime() + "], " + "Intake, Log, " + intake.getLog());*/
 		old = time;
 	}
 	

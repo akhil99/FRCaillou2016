@@ -1,12 +1,12 @@
 package org.usfirst.frc.team115.robot.controllers;
 
+import org.usfirst.frc.team115.lib.DriveBase;
 import org.usfirst.frc.team115.lib.DriveSignal;
 import org.usfirst.frc.team115.lib.DriveState;
 import org.usfirst.frc.team115.trajectory.lib.TrajectoryFollower;
 import org.usfirst.frc.team115.trajectory.lib.TrajectoryFollower.TrajectorySetpoint;
 
-public class DriveStraightController extends Controller {
-	
+public class DriveStraightController extends DriveBase.DriveController {
 	
 	private TrajectoryFollowingController distanceController;
 	private double goalSetpoint;
@@ -14,8 +14,8 @@ public class DriveStraightController extends Controller {
 	
 	public DriveStraightController(DriveState drivestate, double goalSetpoint, double maxVelocity) {
 		TrajectoryFollower.TrajectoryConfig config = new TrajectoryFollower.TrajectoryConfig();
-		config.dt = 1 / 200; //replace with constants
-		config.maxAcc = 10; //replace with constants
+		config.dt = 1 / 200; //TODO replace with constants
+		config.maxAcc = 10; //TODO replace with constants
 		config.maxVel = maxVelocity;
 		
 		distanceController = new TrajectoryFollowingController(0, 0, 0, 0, 0, 0, config); //add constants
@@ -41,6 +41,20 @@ public class DriveStraightController extends Controller {
 		double turn = 0; //use pid to calculate
 		
 		return new DriveSignal(throttle + turn, throttle - turn);
+	}
+	
+	public DriveState getCurrentState(){
+		TrajectoryFollower.TrajectorySetpoint setpoint = distanceController.getTrajSetpoint();
+		double dist = setpoint.pos;
+		double vel = setpoint.vel;
+		return new DriveState(
+				relativeState.getLeftDistance() + dist,
+				relativeState.getRightDistance() + dist,
+				relativeState.getLeftVelocity() + vel,
+				relativeState.getRightVelocity() + vel,
+				relativeState.getHeading(),
+				relativeState.getHeadingVelocity()
+				);
 	}
 	
 	

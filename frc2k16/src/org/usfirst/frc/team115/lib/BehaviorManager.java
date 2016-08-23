@@ -1,8 +1,5 @@
 package org.usfirst.frc.team115.lib;
 
-import org.usfirst.frc.team115.lib.Commands.FlywheelRequest;
-import org.usfirst.frc.team115.lib.Commands.IntakeRequest;
-import org.usfirst.frc.team115.lib.Commands.PunchRequest;
 import org.usfirst.frc.team115.robot.Constants;
 import org.usfirst.frc.team115.robot.HardwareAdaptor;
 import org.usfirst.frc.team115.robot.subsystems.Flywheel;
@@ -11,42 +8,105 @@ import org.usfirst.frc.team115.robot.subsystems.Punch;
 import org.usfirst.frc.team115.robot.subsystems.ShooterArm;
 
 public class BehaviorManager {
-	
+
 	public Flywheel leftFlywheel = HardwareAdaptor.kLeftFlywheel;
 	public Flywheel rightFlywheel = HardwareAdaptor.kRightFlywheel;
 	public Intake intake = HardwareAdaptor.kIntake;
 	public ShooterArm angler = HardwareAdaptor.kAngler;
 	public Punch punch = HardwareAdaptor.kPunch;
 
-	public void update(Commands commands) {
-		
-		if(commands.flywheelRequest == FlywheelRequest.INTAKE) {
-			leftFlywheel.setSpeedPidSetpoint(Constants.kFlywheelIntake);
-			rightFlywheel.setSpeed(-leftFlywheel.getVoltage());
-		} else if (commands.flywheelRequest == FlywheelRequest.SHOOT) {
-			leftFlywheel.setSpeedPidSetpoint(Constants.kFlywheelMax);
-			rightFlywheel.setSpeed(-leftFlywheel.getVoltage());
-		} else if(commands.flywheelRequest == FlywheelRequest.BATTER_SHOOT) {
-			leftFlywheel.setSpeedPidSetpoint(Constants.kFlywheelBatter);
-			rightFlywheel.setSpeed(-leftFlywheel.getVoltage());
-		} else if(commands.flywheelRequest == FlywheelRequest.NONE){
-			leftFlywheel.setSpeedPidSetpoint(0);
-			rightFlywheel.setSpeed(-leftFlywheel.getVoltage());
+	private Routine currentRoutine = null;
+	private RobotSetpoints setpoints;
+	private ManualRoutine manualRoutine = new ManualRoutine(); //TODO make manual routine
+
+	private void setNewRoutine(Routine newRoutine) {
+		boolean needsCancel = newRoutine != currentRoutine && currentRoutine != null;
+
+		boolean needsReset = newRoutine != currentRoutine && newRoutine != null;
+		if(needsCancel) {
+			currentRoutine.cancel();
 		}
-		
-		if(commands.intakeRequest == IntakeRequest.INTAKE) {
+		currentRoutine = newRoutine;
+		if(needsReset) {
+			currentRoutine.reset();
+		}
+	}
+
+	public void reset() {
+		setNewRoutine(null);
+	}
+
+	public BehaviorManager() {
+		setpoints = new RobotSetpoints();
+		//setpoints.armSetpoint = RobotSetpoints.ArmPosition.NONE;
+		setpoints.reset();
+	}
+
+	public void update(Commands commands) {
+		setpoints.reset();
+
+		if(currentRoutine != null && currentRoutine.isFinished()) {
+			setNewRoutine(null);
+		}
+
+		/*if(commands.cancelRoutine) {
+			setNewRoutine(null);
+		} else if(commands.intakeRequest == Commands.IntakeRequest.INTAKE && !(currentRoutine instanceof IntakeRoutine)) {
+			setNewRoutine(new IntakeRoutine());
+		} else if(commands.flywheelRequest == Commands.FlywheelRequest.SHOOT && !(currentRoutine instanceof ShootRoutine)) {
+			setNewRoutine(new ShootRoutine()); //TODO make shoot routine
+		}*/
+
+		if(currentRoutine != null) {
+			setpoints = currentRoutine.update(commands, setpoints);
+		}
+
+		setpoints = manualRoutine.update(commands, setpoints);
+
+		if(setpoints.armSetpoint == RobotSetpoints.ArmPosition.NONE) {
+			angler.setPidSetpoint(angler.getPosition());
+		} else if(setpoints.armSetpoint == RobotSetpoints.ArmPosition.INTAKE) {
+			angler.setPidSetpoint(Constants.kIntakePosition);
+		} else if(setpoints.armSetpoint == RobotSetpoints.ArmPosition.OUTERWORKS) {
+			angler.setPidSetpoint(Constants.kOuterworksPosition); //TODO Add outworks position
+		}
+		//angler.setPidSetpoint(HardwareAdaptor.kAngleJoystick.getZ()*Constants.kIntakePosition);
+
+		if(setpoints.intakeAction == RobotSetpoints.IntakeAction.INTAKE) {
 			intake.setState(Intake.State.INTAKE);
-		} else {
+		} else if(setpoints.intakeAction == RobotSetpoints.IntakeAction.EXHAUST) {
+			intake.setState(Intake.State.EXHAUST);
+		} else if(setpoints.intakeAction == RobotSetpoints.IntakeAction.NONE) {
 			intake.setState(Intake.State.NEUTRAL);
 		}
-		
-		if(commands.punchRequest == PunchRequest.PUNCH) {
+
+		if(setpoints.punchAction == RobotSetpoints.PunchAction.INTAKE) {
+			punch.setState(Punch.State.INTAKE);
+		} else if(setpoints.punchAction == RobotSetpoints.PunchAction.PUNCH) {
 			punch.setState(Punch.State.PUNCH);
-		} else {
-			punch.setState(Punch.State.RETRACT);
+		} else if(setpoints.punchAction == RobotSetpoints.PunchAction.NONE){
+			punch.setState(Punch.State.NONE);
 		}
-		
-		
+
+
+		if(setpoints.flywheelAction == RobotSetpoints.FlywheelAction.INTAKE) {
+			leftFlywheel.setTBHSetpoint(-1000);
+			//leftFlywheel.setSpeedPidSetpoint(Constants.kFlywheelIntake);
+			rightFlywheel.setSpeed(leftFlywheel.getVoltage()); // use values from other for now
+		} else if(setpoints.flywheelAction == RobotSetpoints.FlywheelAction.SHOOT) {
+			leftFlywheel.setTBHSetpoint(1500);
+		//	leftFlywheel.setSpeedPidSetpoint(Constants.kFlywheelMax);
+			rightFlywheel.setSpeed(leftFlywheel.getVoltage());
+		} else if(setpoints.flywheelAction == RobotSetpoints.FlywheelAction.BATTER_SHOOT) {
+			leftFlywheel.setTBHSetpoint(1300);
+			//leftFlywheel.setSpeedPidSetpoint(Constants.kFlywheelBatter);
+			rightFlywheel.setSpeed(leftFlywheel.getVoltage());
+		} else if(setpoints.flywheelAction == RobotSetpoints.FlywheelAction.NONE) {
+			leftFlywheel.setOpenLoop(0);
+//			leftFlywheel.setSpeedPidSetpoint(0);
+			rightFlywheel.setSpeed(leftFlywheel.getVoltage());
+		}
+
 	}
-	
+
 }

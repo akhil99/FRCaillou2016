@@ -31,16 +31,25 @@ public class Robot extends IterativeRobot {
 	
 	Logger log = new Logger("/home/lvuser/robotlog.csv");
 	
-	MultiLooper slowLooper = new MultiLooper("Slow Loopers", 1 / 100.0);
-	MultiLooper looper = new MultiLooper("Loopers", 1 / 200.0);
-	Looper logUpdater = new Looper("Logger", log, 1 / 50.0);
-	
 	DriveBase drive = HardwareAdaptor.kDrive;
 	ShooterArm angler = HardwareAdaptor.kAngler;
 	Flywheel rightFlywheel = HardwareAdaptor.kRightFlywheel;
 	Flywheel leftFlywheel = HardwareAdaptor.kLeftFlywheel;
 	Punch punch = HardwareAdaptor.kPunch;
 	Intake intake = HardwareAdaptor.kIntake;
+	
+	MultiLooper slowLooper = new MultiLooper("Slow Loopers", 1 / 100.0);
+	MultiLooper looper = new MultiLooper("Loopers", 1 / 200.0);
+	Looper driveLooper = new Looper("Drive", drive, 1 / 100.0);
+	Looper anglerLooper = new Looper("Angler", angler, 1 / 200.0);
+	Looper rightFlywheelLooper = new Looper("rightFlywheel", rightFlywheel, 1 / 200.0);
+	Looper leftFlywheelLooper = new Looper("rightFlywheel", leftFlywheel, 1 / 200.0);
+	Looper punchLooper = new Looper("punch", punch, 1 / 200.0);
+	Looper intakeLooper = new Looper("intake", intake, 1 / 200.0);
+	//Looper logLooper = new Looper("Log", log, 1 / 200.0);
+	Looper logUpdater = new Looper("Logger", log, 1 / 50.0);
+	
+
 	
 	DriveSystem driveHandler = new DriveSystem(drive);
 	
@@ -57,12 +66,7 @@ public class Robot extends IterativeRobot {
 	 * used for any initialization code.
 	 */
 	public void robotInit() {
-		slowLooper.registerLoopable(drive);
-		looper.registerLoopable(angler);
-		looper.registerLoopable(rightFlywheel);
-		looper.registerLoopable(leftFlywheel);
-		looper.registerLoopable(punch);
-		looper.registerLoopable(intake);
+		//slowLooper.registerLoopable(drive);
 		compressor.start();
 	}
 
@@ -73,9 +77,16 @@ public class Robot extends IterativeRobot {
 	 */
 	public void disabledInit(){
 
-		looper.stop();
-		slowLooper.stop();
+		driveLooper.stop();
+		anglerLooper.stop();
+		rightFlywheelLooper.stop();
+		leftFlywheelLooper.stop();
+		punchLooper.stop();
+		intakeLooper.stop();
 		logUpdater.stop();
+		//logLooper.stop();
+		//looper.stop();
+		//slowLooper.stop();
 
 		operatorInterface.reset();
 		
@@ -100,8 +111,15 @@ public class Robot extends IterativeRobot {
 	 * or additional comparisons to the switch structure below with additional strings & commands.
 	 */
 	public void autonomousInit() {
-		slowLooper.start();
-		looper.start();
+//		slowLooper.start();
+	
+		driveLooper.start();
+		anglerLooper.start();
+		rightFlywheelLooper.start();		
+		leftFlywheelLooper.start();
+		punchLooper.start();
+		intakeLooper.start();
+		logUpdater.start();
 	}
 
 	/**
@@ -112,7 +130,12 @@ public class Robot extends IterativeRobot {
 	}
 
 	public void teleopInit() {
-		looper.start();
+		driveLooper.start();
+		anglerLooper.start();
+		rightFlywheelLooper.start();		
+		leftFlywheelLooper.start();
+		punchLooper.start();
+		intakeLooper.start();
 		logUpdater.start();
 	}
 
@@ -131,7 +154,11 @@ public class Robot extends IterativeRobot {
 		behaviorManager.update(operatorInterface.getCommands());
 		SmartDashboard.putNumber("Left Flywheel Speed", leftFlywheel.getSpeedRPM());
 		SmartDashboard.putNumber("Right Flywheel Speed", rightFlywheel.getSpeedRPM());
+		SmartDashboard.putNumber("Angle", angler.getPosition());
+		SmartDashboard.putNumber("Angler ouput", angler.getOutput());
 		SmartDashboard.putBoolean("Compressor enabled?", compressor.enabled());
+		SmartDashboard.putNumber("Breakbeam:", HardwareAdaptor.kBreakbeam.getVoltage());
+		//SmartDashboard.putNumber("Angle:", HardwareAdaptor.kAngleJoystick.getZ()*Constants.kIntakePosition);
 	}
 
 	/**

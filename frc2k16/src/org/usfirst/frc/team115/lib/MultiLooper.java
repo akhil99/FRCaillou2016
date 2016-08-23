@@ -2,7 +2,7 @@ package org.usfirst.frc.team115.lib;
 
 import java.util.Vector;
 
-public class MultiLooper extends Loopable{
+public class MultiLooper extends Loopable {
 
 	Looper looper;
 	Vector<Loopable> loopables = new Vector<Loopable>();

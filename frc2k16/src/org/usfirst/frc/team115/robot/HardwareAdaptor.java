@@ -6,11 +6,13 @@ import org.usfirst.frc.team115.robot.subsystems.Intake;
 import org.usfirst.frc.team115.robot.subsystems.Punch;
 import org.usfirst.frc.team115.robot.subsystems.ShooterArm;
 
+import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.PowerDistributionPanel;
 
 public class HardwareAdaptor {
-	
+
+
+
 	//Subsystems
 	public static DriveBase kDrive = new DriveBase();
 	public static ShooterArm kAngler = new ShooterArm();
@@ -23,5 +25,18 @@ public class HardwareAdaptor {
 	public static Joystick kThrottle = new Joystick(0);
 	public static Joystick kWheel = new Joystick(1);
 	public static Joystick kButtonBoard = new Joystick(2);
+	public static Joystick kAngleJoystick = new Joystick(3);
+
+	//Gyro
+	//public static AHRS kGyro = new AHRS(SPI.Port.kMXP);
+	
+	//Breakbeam
+	public static AnalogInput kBreakbeam = new AnalogInput(Constants.kBreakbeamPort);
+
+	//Encoders
+	public static int kLeftDriveEncoderA = 0;
+	public static int kLeftDriveEncoderB = 1;
+	public static int kRightDriveEncoderA = 2;
+	public static int kRightDriveEncoderB = 3;
 
 }
