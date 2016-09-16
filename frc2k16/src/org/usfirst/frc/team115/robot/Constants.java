@@ -10,8 +10,17 @@ public class Constants {
 	
 	
 	
+	
+	
 	/*DO NOT EDIT PAST THIS LINE
 	 * FOR REALSIES DON'T DO IT*/
+	
+	//Wheel Constants
+	public static final int kTicksPerRotation = 243;
+	public static final double kRotationsPerTick = 1.0 / kTicksPerRotation;
+	public static final int kWheelDiameter = 6;
+	public static final double kDriveDistancePerTick = (kWheelDiameter*Math.PI)/kTicksPerRotation;
+	
 	
 	//DriveTrain Talons
 	public static final int kLeftDriveFront = 1;
@@ -38,10 +47,17 @@ public class Constants {
 	public static final int kPunchB = 1;
 	
 	//Arm Positions
-	public static final double kIntakePosition = 1.9;
-	public static final double kOuterworksPosition = 0.05;
+	public static final double kIntakePosition = 2.8;
+	public static final double kOuterworksPosition = 1.78;
+	public static final double kBatterPosition = 1.1;
+	
+	//Encoder Ports
+	public static final int kRightEncoderA = 2;
+	public static final int kRightEncoderB = 3;
+	public static final int kLeftEncoderA = 0;
+	public static final int kLeftEncoderB = 1;
 	
 	//Breakbeam port
-	public static final int kBreakbeamPort = 0;
+	public static final int kBreakbeamPort = 5;
 	
 }

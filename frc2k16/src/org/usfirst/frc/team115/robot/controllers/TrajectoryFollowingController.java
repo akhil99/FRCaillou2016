@@ -26,9 +26,10 @@ public class TrajectoryFollowingController extends Controller {
 		return goal;
 	}
 
-	public void update(double position, double velocity) {
+	public double update(double position, double velocity) {
 		error = goal - position;
 		result = follower.calculate(position, velocity);
+		return result;
 	}
 
 	public double get() {

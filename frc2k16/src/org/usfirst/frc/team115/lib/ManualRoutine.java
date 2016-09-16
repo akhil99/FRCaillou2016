@@ -45,7 +45,11 @@ public class ManualRoutine extends Routine {
 			currentSetpoints.armSetpoint = RobotSetpoints.ArmPosition.INTAKE;
 		} else if(commands.armRequest == Commands.ArmRequest.OUTERWORKS) {
 			currentSetpoints.armSetpoint = RobotSetpoints.ArmPosition.OUTERWORKS;
-		} 
+		} else if(commands.armRequest == Commands.ArmRequest.BATTER) {
+			currentSetpoints.armSetpoint = RobotSetpoints.ArmPosition.BATTER;
+		} else if(commands.armRequest == Commands.ArmRequest.MANUAL) {
+			currentSetpoints.armSetpoint = RobotSetpoints.ArmPosition.MANUAL;
+		}
 		
 		
 		return currentSetpoints;

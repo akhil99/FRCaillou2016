@@ -14,11 +14,11 @@ public class DriveStraightController extends DriveBase.DriveController {
 	
 	public DriveStraightController(DriveState drivestate, double goalSetpoint, double maxVelocity) {
 		TrajectoryFollower.TrajectoryConfig config = new TrajectoryFollower.TrajectoryConfig();
-		config.dt = 1 / 200; //TODO replace with constants
-		config.maxAcc = 10; //TODO replace with constants
+		config.dt = 1 / 100; //TODO replace with constants
+		config.maxAcc = 15; //TODO replace with constants
 		config.maxVel = maxVelocity;
 		
-		distanceController = new TrajectoryFollowingController(0, 0, 0, 0, 0, 0, config); //add constants
+		distanceController = new TrajectoryFollowingController(0, 0.09, 0, 0.001, 0, 0, config); //add constants
 		
 		TrajectorySetpoint initSetpoint = new TrajectorySetpoint();
 		initSetpoint.pos = encoderDist(drivestate);
@@ -36,9 +36,11 @@ public class DriveStraightController extends DriveBase.DriveController {
 	}
 	
 	public DriveSignal update(DriveState state) {
-		distanceController.update(encoderDist(state), encoderVel(state));
-		double throttle = distanceController.get();
+		
+		double throttle = distanceController.update(encoderDist(state), encoderVel(state));
 		double turn = 0; //use pid to calculate
+		System.out.println("UPDATING");
+		System.out.println("Throttle" + throttle);
 		
 		return new DriveSignal(throttle + turn, throttle - turn);
 	}
@@ -64,6 +66,10 @@ public class DriveStraightController extends DriveBase.DriveController {
 	
 	public static double encoderVel(DriveState state) {
 		return (state.getLeftVelocity() + state.getRightVelocity()) / 2.0;
+	}
+	
+	public boolean isOnTarget() {
+		return distanceController.onTarget();
 	}
 
 	@Override

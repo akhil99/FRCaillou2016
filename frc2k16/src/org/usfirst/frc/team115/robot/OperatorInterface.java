@@ -38,11 +38,11 @@ public class OperatorInterface {
 			commands.punchRequest = PunchRequest.NONE;
 		}
 
-		if(wheel.getRawButton(3)) {
+		/*if(wheel.getRawButton(3)) {
 			commands.cancelRoutine = true;
 		} else {
 			commands.cancelRoutine = false;
-		}
+		}*/
 
 		if(buttonBoard.getRawButton(4)) {
 			commands.punchRequest = PunchRequest.PUNCH;
@@ -51,18 +51,29 @@ public class OperatorInterface {
 		}
 
 
-		if(buttonBoard.getRawButton(3)) {
+		/*if(buttonBoard.getRawButton(3)) {
 			commands.flywheelRequest = FlywheelRequest.SHOOT;
 		} /*else if (buttonBoard.getRawButton(2)) {
 			commands.flywheelRequest = FlywheelRequest.SHOOT;
-		} */else if (buttonBoard.getRawButton(1)){
+		} *//*else */
+		if(buttonBoard.getRawButton(3)){
+			commands.flywheelRequest = FlywheelRequest.BATTER_SHOOT;
+		}	else	if (buttonBoard.getRawButton(1)){
 			commands.flywheelRequest = FlywheelRequest.NONE;
+		}
+		
+		if(HardwareAdaptor.kAngleJoystick.getTrigger()) {
+			commands.flywheelRequest = FlywheelRequest.SHOOT;
 		}
 
 		if(buttonBoard.getRawButton(2)) {
-			commands.armRequest = Commands.ArmRequest.INTAKE;
+			commands.armRequest = Commands.ArmRequest.BATTER;
 		} else if(buttonBoard.getRawButton(5)) {
 			commands.armRequest = Commands.ArmRequest.OUTERWORKS;
+		} else if(HardwareAdaptor.kAngleJoystick.getRawButton(2)) {
+			commands.armRequest = Commands.ArmRequest.INTAKE;
+		} else if(HardwareAdaptor.kAngleJoystick.getRawButton(3)) {
+			commands.armRequest = Commands.ArmRequest.MANUAL;
 		}
 
 

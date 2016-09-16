@@ -25,7 +25,7 @@ public class ShooterArm extends Loopable {
 	public void setPidSetpoint(double setpoint) {
 		arm.changeControlMode(TalonControlMode.Position);
 		if(!(controller instanceof ShooterPidController))
-			controller = new ShooterPidController(0.75, 0.0, 0.01, 0.1, arm); //tune pid values
+			controller = new ShooterPidController(0.75, 0.0, 0.01, 0, arm); //tune pid values
 		((ShooterPidController)controller).setSetpoint(setpoint);
 	}
 	
@@ -42,6 +42,12 @@ public class ShooterArm extends Loopable {
 	
 	public double getOutput() {
 		return arm.getOutputVoltage();
+	}
+	
+	public void reset() {
+		int absolutePosition = arm.getPulseWidthPosition() & 0xFFF;
+		arm.setEncPosition(absolutePosition);
+		arm.setFeedbackDevice(FeedbackDevice.CtreMagEncoder_Relative);
 	}
 	
 	public boolean isOnTarget() {

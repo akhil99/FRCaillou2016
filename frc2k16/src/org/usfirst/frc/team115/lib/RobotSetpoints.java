@@ -15,7 +15,7 @@ public class RobotSetpoints {
 	}
 	
 	public enum ArmPosition {
-		INTAKE, OUTERWORKS, SPY, BATTER, LOWGOAL, NONE
+		INTAKE, OUTERWORKS, SPY, BATTER, LOWGOAL, NONE, MANUAL
 	}
 	
 	public FlywheelAction flywheelAction;

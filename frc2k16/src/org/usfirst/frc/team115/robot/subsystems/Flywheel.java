@@ -23,7 +23,7 @@ public class Flywheel extends Loopable {
 		int absolutePosition = flywheelMotor.getPulseWidthPosition() & 0xFFF;
 		flywheelMotor.setEncPosition(absolutePosition);
 		flywheelMotor.setFeedbackDevice(FeedbackDevice.CtreMagEncoder_Relative);
-		flywheelMotor.reverseSensor(false);
+		flywheelMotor.reverseSensor(reverse);
 		
 		flywheelMotor.changeControlMode(TalonControlMode.Speed);
 	}
@@ -73,12 +73,12 @@ public class Flywheel extends Loopable {
 		return flywheelMotor.getOutputVoltage() / flywheelMotor.getBusVoltage();
 	}
 	
-	public void log() {
+	/*public void log() {
 		System.out.println("tout: " + flywheelMotor.getOutputVoltage() / flywheelMotor.getBusVoltage());
 		System.out.println("tspd: " + flywheelMotor.getSpeed());
 		System.out.println("terr: " + flywheelMotor.getClosedLoopError());
 		//System.out.println("ttrg: " + controller.getSetpoint());
-	} 
+	} */
 	
 	public String getLog() {
 		return "tout: " + getVoltage() + 
@@ -99,7 +99,7 @@ public class Flywheel extends Loopable {
 		} else if(controller instanceof TBHController) {
 			((TBHController)controller).update();
 		}
-		log();
+		//log();
 	}
 
 }

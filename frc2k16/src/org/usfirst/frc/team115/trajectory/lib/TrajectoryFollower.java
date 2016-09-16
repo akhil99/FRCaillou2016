@@ -53,11 +53,12 @@ public class TrajectoryFollower {
 		this.currentState = currentState;
 		this.goalPosition = goal;
 		reset = true;
+		errorSum = 0;
 	}
 	
 	public double calculate(double position, double velocity) {
 		double dt = config.dt;
-		
+		System.out.println("DT" + config.dt);
 		if(!reset) {
 			double now = Timer.getFPGATimestamp();
 			dt = now - lastTimestamp;
@@ -67,6 +68,7 @@ public class TrajectoryFollower {
 		}
 
 		if(isFinished()) {
+			System.out.println("finished");
 			currentState.pos = goalPosition;
 			currentState.vel = 0;
 			currentState.acc = 0;
@@ -90,9 +92,10 @@ public class TrajectoryFollower {
 
 			if(minReachableVelocityDiscriminant < 0 || cruiseVelocity < 0) {
 				//cruise velocity is the minimum value between the maximum velocity or the max reachable velocity
+				System.out.println("Max" + maxReachableVelocityDiscriminant);
 				cruiseVelocity = Math.min(config.maxVel, Math.sqrt(maxReachableVelocityDiscriminant));
 			}
-
+			
 			//Finding time and the distance for acceleration period
 			double tAccel = (cruiseVelocity - currentVelocity) / config.maxAcc;
 			double accelDist = currentVelocity * tAccel + .5 * config.maxAcc * tAccel * tAccel;
@@ -102,6 +105,7 @@ public class TrajectoryFollower {
 			double decelDist = cruiseVelocity * tDecel * - .5 * config.maxAcc * tDecel * tDecel;
 
 			//Finding time and distance for cruising period
+			System.out.println("CruiseVel" + cruiseVelocity);
 			double cruiseDist = Math.max(0,  distanceToGo - accelDist - decelDist);
 			double tCruise = Math.abs(cruiseDist / cruiseVelocity);
 
@@ -148,11 +152,12 @@ public class TrajectoryFollower {
 			lastError = error;
 			errorSum = error;
 		}
-
+		
+		System.out.println("dt" + config.dt);
 		//calculate output using feedforward and feedback
-		double output = (kp * error  + kd * 
-				(error - lastError) / config.dt - currentState.vel +
-				(kv * currentState.vel + ka * currentState.acc));
+		double output = kp * error + kd
+        * ((error - lastError) / dt - currentState.vel)
+        + (kv * currentState.vel + ka * currentState.acc);
 
 		if(output < 1.0 && output > -1.0) {
 			//add to error sum only if output isn't already max or min
@@ -161,6 +166,8 @@ public class TrajectoryFollower {
 		output += ki * errorSum;
 
 		lastError = error;
+		
+		System.out.println("TrajectoryFollowerOutput" + Double.toString(output));
 
 		return output;
 	}

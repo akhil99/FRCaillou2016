@@ -38,6 +38,7 @@ public class Robot extends IterativeRobot {
 	Punch punch = HardwareAdaptor.kPunch;
 	Intake intake = HardwareAdaptor.kIntake;
 	
+	
 	MultiLooper slowLooper = new MultiLooper("Slow Loopers", 1 / 100.0);
 	MultiLooper looper = new MultiLooper("Loopers", 1 / 200.0);
 	Looper driveLooper = new Looper("Drive", drive, 1 / 100.0);
@@ -68,6 +69,10 @@ public class Robot extends IterativeRobot {
 	public void robotInit() {
 		//slowLooper.registerLoopable(drive);
 		compressor.start();
+		HardwareAdaptor.kRightDriveEncoder.setDistancePerPulse(Constants.kDriveDistancePerTick);
+		HardwareAdaptor.kRightDriveEncoder.setReverseDirection(true);
+		HardwareAdaptor.kLeftDriveEncoder.setDistancePerPulse(Constants.kDriveDistancePerTick);
+		angler.reset();
 	}
 
 	/**
@@ -137,6 +142,8 @@ public class Robot extends IterativeRobot {
 		punchLooper.start();
 		intakeLooper.start();
 		logUpdater.start();
+		drive.setDistanceSetpoint(18, 9);
+		//drive.setOpenLoop(new DriveSignal(1, 1));
 	}
 
 	/**
@@ -150,14 +157,17 @@ public class Robot extends IterativeRobot {
 			driveHandler.squareInputs(turn);
 		}
 		
-		driveHandler.drive(-throttle.getY(), turn, quickturn);
+		//driveHandler.drive(-throttle.getY(), turn, quickturn);
 		behaviorManager.update(operatorInterface.getCommands());
+		
 		SmartDashboard.putNumber("Left Flywheel Speed", leftFlywheel.getSpeedRPM());
 		SmartDashboard.putNumber("Right Flywheel Speed", rightFlywheel.getSpeedRPM());
 		SmartDashboard.putNumber("Angle", angler.getPosition());
 		SmartDashboard.putNumber("Angler ouput", angler.getOutput());
 		SmartDashboard.putBoolean("Compressor enabled?", compressor.enabled());
 		SmartDashboard.putNumber("Breakbeam:", HardwareAdaptor.kBreakbeam.getVoltage());
+		SmartDashboard.putNumber("Left Drive Encoder", HardwareAdaptor.kLeftDriveEncoder.get());
+		SmartDashboard.putNumber("Right Drive Encoder", HardwareAdaptor.kRightDriveEncoder.get());
 		//SmartDashboard.putNumber("Angle:", HardwareAdaptor.kAngleJoystick.getZ()*Constants.kIntakePosition);
 	}
 

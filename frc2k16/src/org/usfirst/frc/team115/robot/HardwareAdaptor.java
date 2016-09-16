@@ -7,17 +7,16 @@ import org.usfirst.frc.team115.robot.subsystems.Punch;
 import org.usfirst.frc.team115.robot.subsystems.ShooterArm;
 
 import edu.wpi.first.wpilibj.AnalogInput;
+import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.Joystick;
 
 public class HardwareAdaptor {
 
-
-
 	//Subsystems
 	public static DriveBase kDrive = new DriveBase();
 	public static ShooterArm kAngler = new ShooterArm();
-	public static Flywheel kLeftFlywheel = new Flywheel("Left Flywheel", Constants.kLeftFlywheel, true);
-	public static Flywheel kRightFlywheel = new Flywheel("Right Flywheel", Constants.kRightFlywheel, false);
+	public static Flywheel kLeftFlywheel = new Flywheel("Left Flywheel", Constants.kLeftFlywheel, false);
+	public static Flywheel kRightFlywheel = new Flywheel("Right Flywheel", Constants.kRightFlywheel, true);
 	public static Intake kIntake = new Intake(Constants.kIntake);
 	public static Punch kPunch = new Punch(Constants.kPunchA, Constants.kPunchB);
 
@@ -34,9 +33,7 @@ public class HardwareAdaptor {
 	public static AnalogInput kBreakbeam = new AnalogInput(Constants.kBreakbeamPort);
 
 	//Encoders
-	public static int kLeftDriveEncoderA = 0;
-	public static int kLeftDriveEncoderB = 1;
-	public static int kRightDriveEncoderA = 2;
-	public static int kRightDriveEncoderB = 3;
+	public static Encoder kLeftDriveEncoder = new Encoder(Constants.kLeftEncoderA, Constants.kLeftEncoderB);
+	public static Encoder kRightDriveEncoder = new Encoder(Constants.kRightEncoderA, Constants.kRightEncoderB);
 
 }

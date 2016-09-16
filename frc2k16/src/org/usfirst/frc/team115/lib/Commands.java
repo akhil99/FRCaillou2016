@@ -15,7 +15,7 @@ public class Commands {
 	}
 	
 	public enum ArmRequest {
-		INTAKE, OUTERWORKS, SPY, BATTER, LOWGOAL
+		INTAKE, OUTERWORKS, SPY, BATTER, LOWGOAL, MANUAL
 	}
 	
 	public enum ActiveIntakeRequest {

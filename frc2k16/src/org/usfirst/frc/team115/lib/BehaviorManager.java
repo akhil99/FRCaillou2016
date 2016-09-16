@@ -69,8 +69,11 @@ public class BehaviorManager {
 			angler.setPidSetpoint(Constants.kIntakePosition);
 		} else if(setpoints.armSetpoint == RobotSetpoints.ArmPosition.OUTERWORKS) {
 			angler.setPidSetpoint(Constants.kOuterworksPosition); //TODO Add outworks position
+		} else if(setpoints.armSetpoint == RobotSetpoints.ArmPosition.BATTER) {
+			angler.setPidSetpoint(Constants.kBatterPosition);
+		} else if(setpoints.armSetpoint == RobotSetpoints.ArmPosition.MANUAL) {
+			angler.setPidSetpoint(HardwareAdaptor.kAngleJoystick.getZ()*Constants.kIntakePosition);
 		}
-		//angler.setPidSetpoint(HardwareAdaptor.kAngleJoystick.getZ()*Constants.kIntakePosition);
 
 		if(setpoints.intakeAction == RobotSetpoints.IntakeAction.INTAKE) {
 			intake.setState(Intake.State.INTAKE);
@@ -84,27 +87,27 @@ public class BehaviorManager {
 			punch.setState(Punch.State.INTAKE);
 		} else if(setpoints.punchAction == RobotSetpoints.PunchAction.PUNCH) {
 			punch.setState(Punch.State.PUNCH);
-		} else if(setpoints.punchAction == RobotSetpoints.PunchAction.NONE){
+		} else if (setpoints.punchAction == RobotSetpoints.PunchAction.NONE){
 			punch.setState(Punch.State.NONE);
 		}
 
 
 		if(setpoints.flywheelAction == RobotSetpoints.FlywheelAction.INTAKE) {
-			leftFlywheel.setTBHSetpoint(-1000);
+			rightFlywheel.setTBHSetpoint(-4000);
 			//leftFlywheel.setSpeedPidSetpoint(Constants.kFlywheelIntake);
-			rightFlywheel.setSpeed(leftFlywheel.getVoltage()); // use values from other for now
+			leftFlywheel.setSpeed(rightFlywheel.getVoltage()); // use values from other for now
 		} else if(setpoints.flywheelAction == RobotSetpoints.FlywheelAction.SHOOT) {
-			leftFlywheel.setTBHSetpoint(1500);
+			rightFlywheel.setTBHSetpoint(6500);
 		//	leftFlywheel.setSpeedPidSetpoint(Constants.kFlywheelMax);
-			rightFlywheel.setSpeed(leftFlywheel.getVoltage());
+			leftFlywheel.setSpeed(rightFlywheel.getVoltage());
 		} else if(setpoints.flywheelAction == RobotSetpoints.FlywheelAction.BATTER_SHOOT) {
-			leftFlywheel.setTBHSetpoint(1300);
+			rightFlywheel.setTBHSetpoint(4000);
 			//leftFlywheel.setSpeedPidSetpoint(Constants.kFlywheelBatter);
-			rightFlywheel.setSpeed(leftFlywheel.getVoltage());
+			leftFlywheel.setSpeed(rightFlywheel.getVoltage());
 		} else if(setpoints.flywheelAction == RobotSetpoints.FlywheelAction.NONE) {
-			leftFlywheel.setOpenLoop(0);
+			rightFlywheel.setOpenLoop(0);
 //			leftFlywheel.setSpeedPidSetpoint(0);
-			rightFlywheel.setSpeed(leftFlywheel.getVoltage());
+			leftFlywheel.setSpeed(rightFlywheel.getVoltage());
 		}
 
 	}

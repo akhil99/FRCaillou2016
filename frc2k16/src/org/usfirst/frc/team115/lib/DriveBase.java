@@ -38,6 +38,7 @@ public class DriveBase extends Loopable{
 		leftDriveBaseRear = new CANTalon(Constants.kLeftDriveRear);
 		rightDriveBaseFront = new CANTalon(Constants.kRightDriveFront);
 		rightDriveBaseRear = new CANTalon(Constants.kRightDriveRear);
+		
 	}
 
 	public void setOpenLoop(DriveSignal signal) {
@@ -60,9 +61,19 @@ public class DriveBase extends Loopable{
 	@Override
 	public void update() {
 		if(controller != null) {
-			setDriveOutputs(controller.update(getCurrentState()));
+			setDriveOutputs(controller.update(getStateToContinueFrom()));
 		}
 	}
+	
+  private DriveState getStateToContinueFrom() {
+    if (controller == null) {
+      return getCurrentState();
+    } else if (controller instanceof DriveStraightController && ((DriveStraightController)controller).isOnTarget() ) {
+      return ((DriveStraightController)controller).getCurrentState();
+    } else {
+      return getCurrentState();
+    }
+  }
 	
 	/*private DriveState getPoseToContinueFrom(boolean for_turn_controller) {
     if (!for_turn_controller && controller instanceof TurnInPlaceController) {
@@ -76,7 +87,10 @@ public class DriveBase extends Loopable{
 }*/ //TODO finish this shit
 
 	public DriveState getCurrentState() {
-		cachedState.reset(0, 0, 0, 0, 0, 0); //TODO update with values from sensor readings
+		cachedState.reset(HardwareAdaptor.kLeftDriveEncoder.get(),
+				HardwareAdaptor.kRightDriveEncoder.get(), 
+				HardwareAdaptor.kLeftDriveEncoder.getRate(), 
+				HardwareAdaptor.kRightDriveEncoder.getRate(), 0, 0); //TODO update with values from sensor readings
 		return cachedState;
 	}
 
