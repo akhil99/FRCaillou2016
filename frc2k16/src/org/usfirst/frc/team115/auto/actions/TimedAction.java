@@ -1,4 +1,4 @@
-package org.usfirst.frc.team115.lib;
+package org.usfirst.frc.team115.auto.actions;
 
 import edu.wpi.first.wpilibj.Timer;
 

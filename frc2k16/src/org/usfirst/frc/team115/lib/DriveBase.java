@@ -110,5 +110,9 @@ public class DriveBase extends Loopable{
 	public CANTalon getRightRear() {
 		return rightDriveBaseRear;
 	}
+	
+	public boolean controllerOnTarget() {
+		return 
+	}
 
 }

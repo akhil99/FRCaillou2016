@@ -1,6 +1,10 @@
 
 package org.usfirst.frc.team115.robot;
 
+import org.usfirst.frc.team115.auto.AutoModeExecuter;
+import org.usfirst.frc.team115.auto.modes.DoNothingAutoMode;
+import org.usfirst.frc.team115.auto.modes.GenericDefenseAutoMode;
+import org.usfirst.frc.team115.auto.modes.LowBarAutoMode;
 import org.usfirst.frc.team115.lib.BehaviorManager;
 import org.usfirst.frc.team115.lib.DriveBase;
 import org.usfirst.frc.team115.lib.DriveSignal;
@@ -28,17 +32,17 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  */
 public class Robot extends IterativeRobot {
 
-	
+
 	Logger log = new Logger("/home/lvuser/robotlog.csv");
-	
+
 	DriveBase drive = HardwareAdaptor.kDrive;
 	ShooterArm angler = HardwareAdaptor.kAngler;
 	Flywheel rightFlywheel = HardwareAdaptor.kRightFlywheel;
 	Flywheel leftFlywheel = HardwareAdaptor.kLeftFlywheel;
 	Punch punch = HardwareAdaptor.kPunch;
 	Intake intake = HardwareAdaptor.kIntake;
-	
-	
+
+
 	MultiLooper slowLooper = new MultiLooper("Slow Loopers", 1 / 100.0);
 	MultiLooper looper = new MultiLooper("Loopers", 1 / 200.0);
 	Looper driveLooper = new Looper("Drive", drive, 1 / 100.0);
@@ -49,14 +53,16 @@ public class Robot extends IterativeRobot {
 	Looper intakeLooper = new Looper("intake", intake, 1 / 200.0);
 	//Looper logLooper = new Looper("Log", log, 1 / 200.0);
 	Looper logUpdater = new Looper("Logger", log, 1 / 50.0);
-	
 
-	
+
+	AutoModeExecuter autoRunner = new AutoModeExecuter();
+
+
 	DriveSystem driveHandler = new DriveSystem(drive);
-	
+
 	Joystick throttle = HardwareAdaptor.kThrottle;
 	Joystick wheel = HardwareAdaptor.kWheel;
-	
+
 	BehaviorManager behaviorManager = new BehaviorManager();
 	OperatorInterface operatorInterface = new OperatorInterface();
 
@@ -72,6 +78,7 @@ public class Robot extends IterativeRobot {
 		HardwareAdaptor.kRightDriveEncoder.setDistancePerPulse(Constants.kDriveDistancePerTick);
 		HardwareAdaptor.kRightDriveEncoder.setReverseDirection(true);
 		HardwareAdaptor.kLeftDriveEncoder.setDistancePerPulse(Constants.kDriveDistancePerTick);
+		SmartDashboard.putString("Auton", "DoNothing");
 		angler.reset();
 	}
 
@@ -82,6 +89,10 @@ public class Robot extends IterativeRobot {
 	 */
 	public void disabledInit(){
 
+		autoRunner.stop();
+		
+		behaviorManager.reset();
+		
 		driveLooper.stop();
 		anglerLooper.stop();
 		rightFlywheelLooper.stop();
@@ -94,16 +105,16 @@ public class Robot extends IterativeRobot {
 		//slowLooper.stop();
 
 		operatorInterface.reset();
-		
+
 		drive.setOpenLoop(DriveSignal.NEUTRAL);
 		rightFlywheel.setOpenLoop(0.0);
 		leftFlywheel.setOpenLoop(0.0);
-		
+
 		System.gc();
 	}
 
 	public void disabledPeriodic() {
-		
+
 	}
 
 	/**
@@ -116,8 +127,17 @@ public class Robot extends IterativeRobot {
 	 * or additional comparisons to the switch structure below with additional strings & commands.
 	 */
 	public void autonomousInit() {
-//		slowLooper.start();
-	
+		//		slowLooper.start();
+		String autonString = SmartDashboard.getString("Auton", "DoNothing");
+		if(autonString.equalsIgnoreCase("GenericAuton")) {
+			autoRunner.setAutoMode(new GenericDefenseAutoMode());
+		} else if(autonString.equalsIgnoreCase("DoNothing")) {
+			autoRunner.setAutoMode(new DoNothingAutoMode());
+		} else if(autonString.equalsIgnoreCase("LowBar")) {
+			autoRunner.setAutoMode(new LowBarAutoMode());
+		}
+		autoRunner.start();
+		
 		driveLooper.start();
 		anglerLooper.start();
 		rightFlywheelLooper.start();		
@@ -125,13 +145,14 @@ public class Robot extends IterativeRobot {
 		punchLooper.start();
 		intakeLooper.start();
 		logUpdater.start();
+
+
 	}
 
 	/**
 	 * This function is called periodically during autonomous
 	 */
 	public void autonomousPeriodic() {
-
 	}
 
 	public void teleopInit() {
@@ -142,7 +163,7 @@ public class Robot extends IterativeRobot {
 		punchLooper.start();
 		intakeLooper.start();
 		logUpdater.start();
-		drive.setDistanceSetpoint(18, 9);
+		//drive.setDistanceSetpoint(18, 9);
 		//drive.setOpenLoop(new DriveSignal(1, 1));
 	}
 
@@ -152,14 +173,14 @@ public class Robot extends IterativeRobot {
 	public void teleopPeriodic() {
 		boolean quickturn = throttle.getRawButton(2);
 		double turn = wheel.getRawAxis(0);
-		
+
 		if(quickturn) {
 			driveHandler.squareInputs(turn);
 		}
-		
+
 		//driveHandler.drive(-throttle.getY(), turn, quickturn);
 		behaviorManager.update(operatorInterface.getCommands());
-		
+
 		SmartDashboard.putNumber("Left Flywheel Speed", leftFlywheel.getSpeedRPM());
 		SmartDashboard.putNumber("Right Flywheel Speed", rightFlywheel.getSpeedRPM());
 		SmartDashboard.putNumber("Angle", angler.getPosition());
