@@ -18,15 +18,21 @@ public class RobotSetpoints {
 		INTAKE, OUTERWORKS, SPY, BATTER, LOWGOAL, NONE, MANUAL
 	}
 	
+	public enum CamPosition {
+		LOWBAR, STD, INCREMENT, DECREMENT
+	}
+	
 	public FlywheelAction flywheelAction;
 	public IntakeAction intakeAction;
 	public PunchAction punchAction;
 	public ArmPosition armSetpoint;
+	public CamPosition camSetpoint;
 	
 	public void reset() {
 		flywheelAction = FlywheelAction.NONE;
 		intakeAction = IntakeAction.NONE;
 		punchAction = PunchAction.NONE;
+		camSetpoint = CamPosition.LOWBAR;
 		//armSetpoint = ArmPosition.NONE;
 	}
 

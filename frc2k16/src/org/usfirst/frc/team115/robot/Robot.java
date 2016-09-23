@@ -4,6 +4,7 @@ package org.usfirst.frc.team115.robot;
 import org.usfirst.frc.team115.auto.AutoModeExecuter;
 import org.usfirst.frc.team115.auto.modes.DoNothingAutoMode;
 import org.usfirst.frc.team115.auto.modes.GenericDefenseAutoMode;
+import org.usfirst.frc.team115.auto.modes.GenericDefenseTimed;
 import org.usfirst.frc.team115.auto.modes.LowBarAutoMode;
 import org.usfirst.frc.team115.lib.BehaviorManager;
 import org.usfirst.frc.team115.lib.DriveBase;
@@ -17,11 +18,12 @@ import org.usfirst.frc.team115.robot.subsystems.Intake;
 import org.usfirst.frc.team115.robot.subsystems.Punch;
 import org.usfirst.frc.team115.robot.subsystems.ShooterArm;
 
-import edu.wpi.first.wpilibj.Compressor;
+import edu.wpi.first.wpilibj.DigitalOutput;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.vision.USBCamera;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -41,6 +43,7 @@ public class Robot extends IterativeRobot {
 	Flywheel leftFlywheel = HardwareAdaptor.kLeftFlywheel;
 	Punch punch = HardwareAdaptor.kPunch;
 	Intake intake = HardwareAdaptor.kIntake;
+	DigitalOutput flashlight = HardwareAdaptor.kFlashlight;
 
 
 	MultiLooper slowLooper = new MultiLooper("Slow Loopers", 1 / 100.0);
@@ -66,7 +69,7 @@ public class Robot extends IterativeRobot {
 	BehaviorManager behaviorManager = new BehaviorManager();
 	OperatorInterface operatorInterface = new OperatorInterface();
 
-	Compressor compressor = new Compressor(1);
+	//VisionDataManager visionDataManager;
 
 	/**
 	 * This function is run when the robot is first started up and should be
@@ -74,12 +77,15 @@ public class Robot extends IterativeRobot {
 	 */
 	public void robotInit() {
 		//slowLooper.registerLoopable(drive);
-		compressor.start();
+		//visionDataManager = new VisionDataManager();
+		//visionDataManager.init();
 		HardwareAdaptor.kRightDriveEncoder.setDistancePerPulse(Constants.kDriveDistancePerTick);
 		HardwareAdaptor.kRightDriveEncoder.setReverseDirection(true);
 		HardwareAdaptor.kLeftDriveEncoder.setDistancePerPulse(Constants.kDriveDistancePerTick);
 		SmartDashboard.putString("Auton", "DoNothing");
 		angler.reset();
+		flashlight.set(true);
+		new USBCamera("cam0").startCapture();
 	}
 
 	/**
@@ -109,7 +115,9 @@ public class Robot extends IterativeRobot {
 		drive.setOpenLoop(DriveSignal.NEUTRAL);
 		rightFlywheel.setOpenLoop(0.0);
 		leftFlywheel.setOpenLoop(0.0);
-
+		
+		flashlight.set(false);
+		
 		System.gc();
 	}
 
@@ -135,6 +143,8 @@ public class Robot extends IterativeRobot {
 			autoRunner.setAutoMode(new DoNothingAutoMode());
 		} else if(autonString.equalsIgnoreCase("LowBar")) {
 			autoRunner.setAutoMode(new LowBarAutoMode());
+		} else if(autonString.equalsIgnoreCase("GenericTimed")) {
+			autoRunner.setAutoMode(new GenericDefenseTimed());
 		}
 		autoRunner.start();
 		
@@ -163,6 +173,7 @@ public class Robot extends IterativeRobot {
 		punchLooper.start();
 		intakeLooper.start();
 		logUpdater.start();
+		flashlight.set(true);
 		//drive.setDistanceSetpoint(18, 9);
 		//drive.setOpenLoop(new DriveSignal(1, 1));
 	}
@@ -185,8 +196,6 @@ public class Robot extends IterativeRobot {
 		SmartDashboard.putNumber("Right Flywheel Speed", rightFlywheel.getSpeedRPM());
 		SmartDashboard.putNumber("Angle", angler.getPosition());
 		SmartDashboard.putNumber("Angler ouput", angler.getOutput());
-		SmartDashboard.putBoolean("Compressor enabled?", compressor.enabled());
-		SmartDashboard.putNumber("Breakbeam:", HardwareAdaptor.kBreakbeam.getVoltage());
 		SmartDashboard.putNumber("Left Drive Encoder", HardwareAdaptor.kLeftDriveEncoder.get());
 		SmartDashboard.putNumber("Right Drive Encoder", HardwareAdaptor.kRightDriveEncoder.get());
 		//SmartDashboard.putNumber("Angle:", HardwareAdaptor.kAngleJoystick.getZ()*Constants.kIntakePosition);

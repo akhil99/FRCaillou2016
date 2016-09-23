@@ -2,10 +2,10 @@ package org.usfirst.frc.team115.robot;
 
 import org.usfirst.frc.team115.lib.Commands;
 import org.usfirst.frc.team115.lib.Commands.FlywheelRequest;
-import org.usfirst.frc.team115.lib.Commands.IntakeRequest;
 import org.usfirst.frc.team115.lib.Commands.PunchRequest;
 
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.Servo;
 
 /**
  * This class is the glue that binds the controls on the physical operator
@@ -18,6 +18,8 @@ public class OperatorInterface {
 	Joystick throttle = HardwareAdaptor.kThrottle;
 	Joystick wheel = HardwareAdaptor.kWheel;
 	Joystick buttonBoard = HardwareAdaptor.kButtonBoard;
+	Joystick xBoxController = HardwareAdaptor.kXboxController;
+	Servo camServo = HardwareAdaptor.kCameraServo;
 
 	public void reset() {
 		commands = new Commands();
@@ -43,20 +45,61 @@ public class OperatorInterface {
 		} else {
 			commands.cancelRoutine = false;
 		}*/
-
+/*
 		if(buttonBoard.getRawButton(4)) {
 			commands.punchRequest = PunchRequest.PUNCH;
 		} else if(commands.punchRequest != PunchRequest.INTAKE) {
 			commands.punchRequest = PunchRequest.NONE;
+		}*/
+
+		
+		if(xBoxController.getRawButton(1)) {
+			commands.armRequest = Commands.ArmRequest.INTAKE;
+		} else if(xBoxController.getRawButton(2)) {
+			commands.armRequest = Commands.ArmRequest.BATTER;
+		} else if(xBoxController.getRawButton(4)) {
+			commands.armRequest = Commands.ArmRequest.OUTERWORKS;
+		} else if(xBoxController.getRawButton(3)) {
+			commands.armRequest = Commands.ArmRequest.RESET;
 		}
-
-
+		
+		if(xBoxController.getRawButton(5)) {
+			commands.flywheelRequest = FlywheelRequest.BATTER_SHOOT;
+		} else if(xBoxController.getRawButton(6)) {
+			commands.flywheelRequest = FlywheelRequest.SHOOT;
+		}
+		
+		if(xBoxController.getRawAxis(2) >= 0.1) {
+			commands.flywheelRequest = FlywheelRequest.NONE;
+		} 
+		
+		if(xBoxController.getRawAxis(3) >= 0.1) {
+			commands.punchRequest = PunchRequest.PUNCH;
+		} else {
+			commands.punchRequest = PunchRequest.NONE;
+		}
+		
+		if(xBoxController.getRawButton(10)) {
+			commands.armRequest = Commands.ArmRequest.MANUAL;
+		}
+		
+		if(xBoxController.getPOV() == 0) {
+			commands.camRequest = Commands.CameraServoRequest.STD;
+		} else if(xBoxController.getPOV() == 180) {
+			commands.camRequest = Commands.CameraServoRequest.LOWBAR;
+		} else if(xBoxController.getPOV() == 90) {
+			commands.camRequest = Commands.CameraServoRequest.UP;
+		} else if(xBoxController.getPOV() == 270) {
+			commands.camRequest = Commands.CameraServoRequest.DOWN;
+		}
+		
+		
 		/*if(buttonBoard.getRawButton(3)) {
 			commands.flywheelRequest = FlywheelRequest.SHOOT;
 		} /*else if (buttonBoard.getRawButton(2)) {
 			commands.flywheelRequest = FlywheelRequest.SHOOT;
 		} *//*else */
-		if(buttonBoard.getRawButton(3)){
+		/*if(buttonBoard.getRawButton(3)){
 			commands.flywheelRequest = FlywheelRequest.BATTER_SHOOT;
 		}	else	if (buttonBoard.getRawButton(1)){
 			commands.flywheelRequest = FlywheelRequest.NONE;
@@ -74,8 +117,7 @@ public class OperatorInterface {
 			commands.armRequest = Commands.ArmRequest.INTAKE;
 		} else if(HardwareAdaptor.kAngleJoystick.getRawButton(3)) {
 			commands.armRequest = Commands.ArmRequest.MANUAL;
-		}
-
+		}*/
 
 		return commands;
 	}

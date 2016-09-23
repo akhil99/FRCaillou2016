@@ -7,6 +7,8 @@ import org.usfirst.frc.team115.robot.subsystems.Intake;
 import org.usfirst.frc.team115.robot.subsystems.Punch;
 import org.usfirst.frc.team115.robot.subsystems.ShooterArm;
 
+import edu.wpi.first.wpilibj.Servo;
+
 public class BehaviorManager {
 
 	public Flywheel leftFlywheel = HardwareAdaptor.kLeftFlywheel;
@@ -14,6 +16,7 @@ public class BehaviorManager {
 	public Intake intake = HardwareAdaptor.kIntake;
 	public ShooterArm angler = HardwareAdaptor.kAngler;
 	public Punch punch = HardwareAdaptor.kPunch;
+	public Servo camServo = HardwareAdaptor.kCameraServo;
 
 	private Routine currentRoutine = null;
 	private RobotSetpoints setpoints;
@@ -62,6 +65,16 @@ public class BehaviorManager {
 		}
 
 		setpoints = manualRoutine.update(commands, setpoints);
+		
+		if(setpoints.camSetpoint == RobotSetpoints.CamPosition.LOWBAR) {
+			camServo.setAngle(180);
+		} else if(setpoints.camSetpoint == RobotSetpoints.CamPosition.STD) {
+			camServo.setAngle(0);
+		} else if(setpoints.camSetpoint == RobotSetpoints.CamPosition.INCREMENT) {
+			camServo.setAngle(camServo.getAngle()+10);
+		} else if(setpoints.camSetpoint == RobotSetpoints.CamPosition.DECREMENT) {
+			camServo.setAngle(camServo.getAngle()-10);
+		}
 
 		if(setpoints.armSetpoint == RobotSetpoints.ArmPosition.NONE) {
 			angler.setPidSetpoint(angler.getPosition());
@@ -72,7 +85,12 @@ public class BehaviorManager {
 		} else if(setpoints.armSetpoint == RobotSetpoints.ArmPosition.BATTER) {
 			angler.setPidSetpoint(Constants.kBatterPosition);
 		} else if(setpoints.armSetpoint == RobotSetpoints.ArmPosition.MANUAL) {
-			angler.setPidSetpoint(HardwareAdaptor.kAngleJoystick.getZ()*Constants.kIntakePosition);
+			double angle = HardwareAdaptor.kXboxController.getRawAxis(4) * Constants.kIntakePosition;
+			if(angle != 0) {				
+				angler.setPidSetpoint(angle);
+			} else {
+				angler.setPidSetpoint(angler.getPosition());
+			}
 		}
 
 		if(setpoints.intakeAction == RobotSetpoints.IntakeAction.INTAKE) {
@@ -93,21 +111,25 @@ public class BehaviorManager {
 
 
 		if(setpoints.flywheelAction == RobotSetpoints.FlywheelAction.INTAKE) {
-			rightFlywheel.setTBHSetpoint(-4000);
+			rightFlywheel.setTBHSetpoint(Constants.kFlywheelIntake);
+			leftFlywheel.setTBHSetpoint(Constants.kFlywheelIntake);
 			//leftFlywheel.setSpeedPidSetpoint(Constants.kFlywheelIntake);
-			leftFlywheel.setSpeed(rightFlywheel.getVoltage()); // use values from other for now
+//			leftFlywheel.setSpeed(rightFlywheel.getVoltage()); // use values from other for now
 		} else if(setpoints.flywheelAction == RobotSetpoints.FlywheelAction.SHOOT) {
-			rightFlywheel.setTBHSetpoint(6500);
+			rightFlywheel.setTBHSetpoint(Constants.kFlywheelMax);
+			leftFlywheel.setTBHSetpoint(Constants.kFlywheelMax);
 		//	leftFlywheel.setSpeedPidSetpoint(Constants.kFlywheelMax);
-			leftFlywheel.setSpeed(rightFlywheel.getVoltage());
+//			leftFlywheel.setSpeed(rightFlywheel.getVoltage());
 		} else if(setpoints.flywheelAction == RobotSetpoints.FlywheelAction.BATTER_SHOOT) {
-			rightFlywheel.setTBHSetpoint(4000);
+			rightFlywheel.setTBHSetpoint(Constants.kFlywheelBatter);
+			leftFlywheel.setTBHSetpoint(Constants.kFlywheelBatter);
 			//leftFlywheel.setSpeedPidSetpoint(Constants.kFlywheelBatter);
-			leftFlywheel.setSpeed(rightFlywheel.getVoltage());
+//			leftFlywheel.setSpeed(rightFlywheel.getVoltage());
 		} else if(setpoints.flywheelAction == RobotSetpoints.FlywheelAction.NONE) {
 			rightFlywheel.setOpenLoop(0);
+			leftFlywheel.setOpenLoop(0);
 //			leftFlywheel.setSpeedPidSetpoint(0);
-			leftFlywheel.setSpeed(rightFlywheel.getVoltage());
+//			leftFlywheel.setSpeed(rightFlywheel.getVoltage());
 		}
 
 	}

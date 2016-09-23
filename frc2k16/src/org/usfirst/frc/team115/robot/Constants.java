@@ -4,9 +4,9 @@ public class Constants {
 	
 	
 	//Flywheel speeds (RPM)
-	public static final double kFlywheelMax = 1200; //TODO edit speeds
-	public static final double kFlywheelBatter = 1000;
-	public static final double kFlywheelIntake = -1000; 
+	public static final double kFlywheelMax = 6500;
+	public static final double kFlywheelBatter = 4000;
+	public static final double kFlywheelIntake = -4200; 
 	
 	
 	
@@ -23,24 +23,24 @@ public class Constants {
 	
 	
 	//DriveTrain Talons
-	public static final int kLeftDriveFront = 1;
-	public static final int kLeftDriveRear = 2;
-	public static final int kRightDriveFront = 3;
-	public static final int kRightDriveRear = 4;
+	public static final int kLeftDriveFront = 9;
+	public static final int kLeftDriveRear = 10;
+	public static final int kRightDriveFront = 12;
+	public static final int kRightDriveRear = 11;
 	
 	//Angler Talons
 	//public static final int kLeftShooter = 7;
-	public static final int kRightShooter = 8;
+	public static final int kRightShooter = 13;
 	
 	//Flywheel Talons
-	public static final int kLeftFlywheel = 6;
-	public static final int kRightFlywheel = 5;
+	public static final int kLeftFlywheel = 16;
+	public static final int kRightFlywheel = 15;
 	
 	//Intake Talon
-	public static final int kIntake = 9;
+	public static final int kIntake = 20;
 	
 	//Punch Talon
-	public static final int kPunchWheel = 7;
+	public static final int kPunchWheel = 14;
 	
 	//Solenoids
 	public static final int kPunchA = 0;
@@ -52,12 +52,19 @@ public class Constants {
 	public static final double kBatterPosition = 1.1;
 	
 	//Encoder Ports
-	public static final int kRightEncoderA = 2;
-	public static final int kRightEncoderB = 3;
+	public static final int kRightEncoderA = 6;
+	public static final int kRightEncoderB = 7;
 	public static final int kLeftEncoderA = 0;
 	public static final int kLeftEncoderB = 1;
 	
 	//Breakbeam port
-	public static final int kBreakbeamPort = 5;
+	//public static final int kBreakbeamPort = 6;
+	
+	//Limit Switch Ports
+	public static final int kTopLimit = 4;
+	public static final int kBottomLimit = 5;
+	
+	//Flashlight Ports
+	public static final int kFlashlightPort = 9;
 	
 }

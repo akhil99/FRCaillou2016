@@ -15,11 +15,15 @@ public class Commands {
 	}
 	
 	public enum ArmRequest {
-		INTAKE, OUTERWORKS, SPY, BATTER, LOWGOAL, MANUAL
+		INTAKE, OUTERWORKS, SPY, BATTER, LOWGOAL, MANUAL, RESET, NONE
 	}
 	
 	public enum ActiveIntakeRequest {
 		INTAKE, EXHAUST, NONE
+	}
+	
+	public enum CameraServoRequest {
+		LOWBAR, STD, UP, DOWN
 	}
 	
 	public IntakeRequest intakeRequest;
@@ -27,5 +31,6 @@ public class Commands {
 	public FlywheelRequest flywheelRequest;
 	public PunchRequest punchRequest;
 	public ArmRequest armRequest;
+	public CameraServoRequest camRequest;
 	public boolean cancelRoutine;
 }

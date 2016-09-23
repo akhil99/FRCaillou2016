@@ -14,7 +14,7 @@ public class Intake extends Loopable {
 
 	CANTalon talon;
 	State state;
-	AnalogInput breakbeam = HardwareAdaptor.kBreakbeam;
+	//AnalogInput breakbeam = HardwareAdaptor.kBreakbeam;
 	
 	double intakeSpeed = -0.35;
 
@@ -43,7 +43,7 @@ public class Intake extends Loopable {
 	}
 
 	public boolean breakbeamTriggered() {
-		return breakbeam.getVoltage() >= 1.5;
+		return false; //breakbeam.getVoltage() >= 1.5;
 	}
 
 }

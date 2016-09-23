@@ -51,6 +51,16 @@ public class ManualRoutine extends Routine {
 			currentSetpoints.armSetpoint = RobotSetpoints.ArmPosition.MANUAL;
 		}
 		
+		if(commands.camRequest == Commands.CameraServoRequest.LOWBAR) {
+			currentSetpoints.camSetpoint = RobotSetpoints.CamPosition.LOWBAR;
+		} else if(commands.camRequest == Commands.CameraServoRequest.STD) {
+			currentSetpoints.camSetpoint = RobotSetpoints.CamPosition.STD;
+		} else if(commands.camRequest == Commands.CameraServoRequest.UP) {
+			currentSetpoints.camSetpoint = RobotSetpoints.CamPosition.INCREMENT;
+		} else if(commands.camRequest == Commands.CameraServoRequest.DOWN) {
+			currentSetpoints.camSetpoint = RobotSetpoints.CamPosition.DECREMENT;
+		}
+		
 		
 		return currentSetpoints;
 	}
