@@ -20,8 +20,8 @@ public class BehaviorManager {
 
 	private Routine currentRoutine = null;
 	private RobotSetpoints setpoints;
-	private ManualRoutine manualRoutine = new ManualRoutine(); //TODO make manual routine
-
+	private ManualRoutine manualRoutine = new ManualRoutine();
+	
 	private void setNewRoutine(Routine newRoutine) {
 		boolean needsCancel = newRoutine != currentRoutine && currentRoutine != null;
 
@@ -41,9 +41,10 @@ public class BehaviorManager {
 
 	public BehaviorManager() {
 		setpoints = new RobotSetpoints();
-		//setpoints.armSetpoint = RobotSetpoints.ArmPosition.NONE;
 		setpoints.reset();
 	}
+	
+	double setpoint = 0;
 
 	public void update(Commands commands) {
 		setpoints.reset();
@@ -85,12 +86,10 @@ public class BehaviorManager {
 		} else if(setpoints.armSetpoint == RobotSetpoints.ArmPosition.BATTER) {
 			angler.setPidSetpoint(Constants.kBatterPosition);
 		} else if(setpoints.armSetpoint == RobotSetpoints.ArmPosition.MANUAL) {
-			double angle = HardwareAdaptor.kXboxController.getRawAxis(4) * Constants.kIntakePosition;
-			if(angle != 0) {				
-				angler.setPidSetpoint(angle);
-			} else {
-				angler.setPidSetpoint(angler.getPosition());
-			}
+			double output = HardwareAdaptor.kXboxController.getRawAxis(5);
+			angler.setOpenLoop(output);
+		} else if(setpoints.armSetpoint == RobotSetpoints.ArmPosition.RESET) {
+			angler.setOpenLoop(-0.2);
 		}
 
 		if(setpoints.intakeAction == RobotSetpoints.IntakeAction.INTAKE) {
@@ -111,25 +110,17 @@ public class BehaviorManager {
 
 
 		if(setpoints.flywheelAction == RobotSetpoints.FlywheelAction.INTAKE) {
-			rightFlywheel.setTBHSetpoint(Constants.kFlywheelIntake);
-			leftFlywheel.setTBHSetpoint(Constants.kFlywheelIntake);
-			//leftFlywheel.setSpeedPidSetpoint(Constants.kFlywheelIntake);
-//			leftFlywheel.setSpeed(rightFlywheel.getVoltage()); // use values from other for now
+			leftFlywheel.setTBHSetpoint(-Constants.kFlywheelIntake);
+			rightFlywheel.setSpeed(-leftFlywheel.getVoltage()); // use values from other for now
 		} else if(setpoints.flywheelAction == RobotSetpoints.FlywheelAction.SHOOT) {
-			rightFlywheel.setTBHSetpoint(Constants.kFlywheelMax);
-			leftFlywheel.setTBHSetpoint(Constants.kFlywheelMax);
-		//	leftFlywheel.setSpeedPidSetpoint(Constants.kFlywheelMax);
-//			leftFlywheel.setSpeed(rightFlywheel.getVoltage());
+			leftFlywheel.setTBHSetpoint(-Constants.kFlywheelMax);
+			rightFlywheel.setSpeed(-leftFlywheel.getVoltage());
 		} else if(setpoints.flywheelAction == RobotSetpoints.FlywheelAction.BATTER_SHOOT) {
-			rightFlywheel.setTBHSetpoint(Constants.kFlywheelBatter);
-			leftFlywheel.setTBHSetpoint(Constants.kFlywheelBatter);
-			//leftFlywheel.setSpeedPidSetpoint(Constants.kFlywheelBatter);
-//			leftFlywheel.setSpeed(rightFlywheel.getVoltage());
+			leftFlywheel.setTBHSetpoint(-Constants.kFlywheelBatter);
+			rightFlywheel.setSpeed(-leftFlywheel.getVoltage());
 		} else if(setpoints.flywheelAction == RobotSetpoints.FlywheelAction.NONE) {
-			rightFlywheel.setOpenLoop(0);
 			leftFlywheel.setOpenLoop(0);
-//			leftFlywheel.setSpeedPidSetpoint(0);
-//			leftFlywheel.setSpeed(rightFlywheel.getVoltage());
+			rightFlywheel.setSpeed(-leftFlywheel.getVoltage());
 		}
 
 	}

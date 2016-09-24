@@ -16,7 +16,7 @@ public class Flywheel extends Loopable {
 	String name;
 	Controller controller;
 	
-	public Flywheel(String name, int talonId, boolean reverse) {
+	public Flywheel(String name, int talonId, boolean reverse, boolean output) {
 		this.flywheelMotor = new CANTalon(talonId);
 		this.name = name;
 		
@@ -24,6 +24,7 @@ public class Flywheel extends Loopable {
 		flywheelMotor.setEncPosition(absolutePosition);
 		flywheelMotor.setFeedbackDevice(FeedbackDevice.CtreMagEncoder_Relative);
 		flywheelMotor.reverseSensor(reverse);
+		flywheelMotor.reverseOutput(output);
 		
 		flywheelMotor.changeControlMode(TalonControlMode.Speed);
 	}
@@ -73,17 +74,9 @@ public class Flywheel extends Loopable {
 		return flywheelMotor.getOutputVoltage() / flywheelMotor.getBusVoltage();
 	}
 	
-	/*public void log() {
-		System.out.println("tout: " + flywheelMotor.getOutputVoltage() / flywheelMotor.getBusVoltage());
-		System.out.println("tspd: " + flywheelMotor.getSpeed());
-		System.out.println("terr: " + flywheelMotor.getClosedLoopError());
-		//System.out.println("ttrg: " + controller.getSetpoint());
-	} */
-	
 	public String getLog() {
 		return "tout: " + getVoltage() + 
 				", tspd: " + getSpeedRPM() + ", terr: " + flywheelMotor.getClosedLoopError();
-				//", ttrg: " + controller.getSetpoint();
 	}
 	
 	public double getEncVel() {
@@ -99,7 +92,6 @@ public class Flywheel extends Loopable {
 		} else if(controller instanceof TBHController) {
 			((TBHController)controller).update();
 		}
-		//log();
 	}
 
 }

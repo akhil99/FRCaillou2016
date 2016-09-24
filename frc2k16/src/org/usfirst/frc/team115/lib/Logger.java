@@ -2,15 +2,12 @@ package org.usfirst.frc.team115.lib;
 
 import java.io.File;
 import java.io.PrintWriter;
-import java.sql.Timestamp;
-import java.util.Date;
 
 import org.usfirst.frc.team115.robot.HardwareAdaptor;
 import org.usfirst.frc.team115.robot.subsystems.Flywheel;
 import org.usfirst.frc.team115.robot.subsystems.Intake;
 import org.usfirst.frc.team115.robot.subsystems.Punch;
 
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 
 public class Logger extends Loopable {

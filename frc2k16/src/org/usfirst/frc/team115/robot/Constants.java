@@ -10,8 +10,6 @@ public class Constants {
 	
 	
 	
-	
-	
 	/*DO NOT EDIT PAST THIS LINE
 	 * FOR REALSIES DON'T DO IT*/
 	
@@ -47,7 +45,7 @@ public class Constants {
 	public static final int kPunchB = 1;
 	
 	//Arm Positions
-	public static final double kIntakePosition = 2.8;
+	public static final double kIntakePosition = 3;
 	public static final double kOuterworksPosition = 1.78;
 	public static final double kBatterPosition = 1.1;
 	
@@ -57,12 +55,9 @@ public class Constants {
 	public static final int kLeftEncoderA = 0;
 	public static final int kLeftEncoderB = 1;
 	
-	//Breakbeam port
-	//public static final int kBreakbeamPort = 6;
-	
 	//Limit Switch Ports
-	public static final int kTopLimit = 4;
-	public static final int kBottomLimit = 5;
+	public static final int kTopLimit = 2;
+	public static final int kBottomLimit = 8;
 	
 	//Flashlight Ports
 	public static final int kFlashlightPort = 9;

@@ -18,6 +18,7 @@ import org.usfirst.frc.team115.robot.subsystems.Intake;
 import org.usfirst.frc.team115.robot.subsystems.Punch;
 import org.usfirst.frc.team115.robot.subsystems.ShooterArm;
 
+import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.DigitalOutput;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Joystick;
@@ -54,7 +55,6 @@ public class Robot extends IterativeRobot {
 	Looper leftFlywheelLooper = new Looper("rightFlywheel", leftFlywheel, 1 / 200.0);
 	Looper punchLooper = new Looper("punch", punch, 1 / 200.0);
 	Looper intakeLooper = new Looper("intake", intake, 1 / 200.0);
-	//Looper logLooper = new Looper("Log", log, 1 / 200.0);
 	Looper logUpdater = new Looper("Logger", log, 1 / 50.0);
 
 
@@ -69,23 +69,18 @@ public class Robot extends IterativeRobot {
 	BehaviorManager behaviorManager = new BehaviorManager();
 	OperatorInterface operatorInterface = new OperatorInterface();
 
-	//VisionDataManager visionDataManager;
-
 	/**
 	 * This function is run when the robot is first started up and should be
 	 * used for any initialization code.
 	 */
 	public void robotInit() {
-		//slowLooper.registerLoopable(drive);
-		//visionDataManager = new VisionDataManager();
-		//visionDataManager.init();
 		HardwareAdaptor.kRightDriveEncoder.setDistancePerPulse(Constants.kDriveDistancePerTick);
 		HardwareAdaptor.kRightDriveEncoder.setReverseDirection(true);
 		HardwareAdaptor.kLeftDriveEncoder.setDistancePerPulse(Constants.kDriveDistancePerTick);
 		SmartDashboard.putString("Auton", "DoNothing");
 		angler.reset();
 		flashlight.set(true);
-		new USBCamera("cam0").startCapture();
+		CameraServer.getInstance().startAutomaticCapture(new USBCamera("cam0"));
 	}
 
 	/**
@@ -106,9 +101,6 @@ public class Robot extends IterativeRobot {
 		punchLooper.stop();
 		intakeLooper.stop();
 		logUpdater.stop();
-		//logLooper.stop();
-		//looper.stop();
-		//slowLooper.stop();
 
 		operatorInterface.reset();
 
@@ -135,7 +127,9 @@ public class Robot extends IterativeRobot {
 	 * or additional comparisons to the switch structure below with additional strings & commands.
 	 */
 	public void autonomousInit() {
-		//		slowLooper.start();
+		HardwareAdaptor.kRightDriveEncoder.setDistancePerPulse(Constants.kDriveDistancePerTick);
+		HardwareAdaptor.kRightDriveEncoder.setReverseDirection(true);
+		HardwareAdaptor.kLeftDriveEncoder.setDistancePerPulse(Constants.kDriveDistancePerTick);
 		String autonString = SmartDashboard.getString("Auton", "DoNothing");
 		if(autonString.equalsIgnoreCase("GenericAuton")) {
 			autoRunner.setAutoMode(new GenericDefenseAutoMode());
@@ -155,14 +149,14 @@ public class Robot extends IterativeRobot {
 		punchLooper.start();
 		intakeLooper.start();
 		logUpdater.start();
-
-
 	}
 
 	/**
 	 * This function is called periodically during autonomous
 	 */
 	public void autonomousPeriodic() {
+		SmartDashboard.putNumber("Left Drive Encoder", HardwareAdaptor.kLeftDriveEncoder.get());
+		SmartDashboard.putNumber("Right Drive Encoder", HardwareAdaptor.kRightDriveEncoder.get());
 	}
 
 	public void teleopInit() {
@@ -174,8 +168,6 @@ public class Robot extends IterativeRobot {
 		intakeLooper.start();
 		logUpdater.start();
 		flashlight.set(true);
-		//drive.setDistanceSetpoint(18, 9);
-		//drive.setOpenLoop(new DriveSignal(1, 1));
 	}
 
 	/**
@@ -189,7 +181,7 @@ public class Robot extends IterativeRobot {
 			driveHandler.squareInputs(turn);
 		}
 
-		//driveHandler.drive(-throttle.getY(), turn, quickturn);
+		driveHandler.drive(-throttle.getY(), turn, quickturn);
 		behaviorManager.update(operatorInterface.getCommands());
 
 		SmartDashboard.putNumber("Left Flywheel Speed", leftFlywheel.getSpeedRPM());
@@ -198,7 +190,8 @@ public class Robot extends IterativeRobot {
 		SmartDashboard.putNumber("Angler ouput", angler.getOutput());
 		SmartDashboard.putNumber("Left Drive Encoder", HardwareAdaptor.kLeftDriveEncoder.get());
 		SmartDashboard.putNumber("Right Drive Encoder", HardwareAdaptor.kRightDriveEncoder.get());
-		//SmartDashboard.putNumber("Angle:", HardwareAdaptor.kAngleJoystick.getZ()*Constants.kIntakePosition);
+		SmartDashboard.putBoolean("Lower Limit", HardwareAdaptor.kBottomLimit.get());
+		SmartDashboard.putBoolean("Top Limit", HardwareAdaptor.kTopLimit.get());
 	}
 
 	/**

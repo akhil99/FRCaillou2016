@@ -18,8 +18,8 @@ public class HardwareAdaptor {
 	//Subsystems
 	public static DriveBase kDrive = new DriveBase();
 	public static ShooterArm kAngler = new ShooterArm();
-	public static Flywheel kLeftFlywheel = new Flywheel("Left Flywheel", Constants.kLeftFlywheel, false);
-	public static Flywheel kRightFlywheel = new Flywheel("Right Flywheel", Constants.kRightFlywheel, true);
+	public static Flywheel kLeftFlywheel = new Flywheel("Left Flywheel", Constants.kLeftFlywheel, true, true);
+	public static Flywheel kRightFlywheel = new Flywheel("Right Flywheel", Constants.kRightFlywheel, true, false);
 	public static Intake kIntake = new Intake(Constants.kIntake);
 	public static Punch kPunch = new Punch(Constants.kPunchA, Constants.kPunchB);
 	public static Servo kCameraServo = new Servo(0);
@@ -27,15 +27,7 @@ public class HardwareAdaptor {
 	//Interface
 	public static Joystick kThrottle = new Joystick(0);
 	public static Joystick kWheel = new Joystick(1);
-	public static Joystick kButtonBoard = new Joystick(3);
-	//public static Joystick kAngleJoystick = new Joystick(3);
 	public static Joystick kXboxController = new Joystick(2);
-
-	//Gyro
-	//public static AHRS kGyro = new AHRS(SPI.Port.kMXP);
-	
-	//Breakbeam
-	//public static AnalogInput kBreakbeam = new AnalogInput(Constants.kBreakbeamPort);
 
 	//Encoders
 	public static Encoder kLeftDriveEncoder = new Encoder(Constants.kLeftEncoderA, Constants.kLeftEncoderB);

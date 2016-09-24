@@ -15,7 +15,7 @@ public class RobotSetpoints {
 	}
 	
 	public enum ArmPosition {
-		INTAKE, OUTERWORKS, SPY, BATTER, LOWGOAL, NONE, MANUAL
+		INTAKE, OUTERWORKS, SPY, BATTER, LOWGOAL, NONE, MANUAL, RESET
 	}
 	
 	public enum CamPosition {
@@ -33,7 +33,6 @@ public class RobotSetpoints {
 		intakeAction = IntakeAction.NONE;
 		punchAction = PunchAction.NONE;
 		camSetpoint = CamPosition.LOWBAR;
-		//armSetpoint = ArmPosition.NONE;
 	}
 
 }

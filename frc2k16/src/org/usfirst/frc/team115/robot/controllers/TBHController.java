@@ -14,6 +14,7 @@ public class TBHController extends Controller{
 	private double output = 0;
 
 
+
 	public TBHController(CANTalon controller, double setpoint, double gain) {
 		this.controller = controller;
 		this.setpoint = setpoint;
@@ -35,7 +36,6 @@ public class TBHController extends Controller{
 		}
 
 		controller.set(output);
-
 	}
 
 	private boolean isPositive(double input){
@@ -52,7 +52,7 @@ public class TBHController extends Controller{
 		}
 		return input;
 	}
-	
+
 	public double getRPM() {
 		return controller.get(); // figure out how to calculate rpm
 	}
