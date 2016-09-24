@@ -9,6 +9,7 @@ public class GenericDefenseTimed extends AutoMode {
 		waitTime(0.7);
 		drive.setOpenLoop(new DriveSignal(0.75, 0.75));
 		waitTime(2);
+		drive.setOpenLoop(DriveSignal.NEUTRAL);
 	}
 
 	@Override
